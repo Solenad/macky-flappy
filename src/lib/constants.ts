@@ -5,7 +5,7 @@ export const GAME_CONFIG = {
   JUMP_STRENGTH: -10,
   PIPE_SPEED: 3,
   PIPE_SPAWN_RATE: 1500, // ms
-  PIPE_WIDTH: 52,
+  PIPE_WIDTH: 60,
   PIPE_GAP: 160,
   CANVAS_WIDTH: window.innerWidth,
   CANVAS_HEIGHT: window.innerHeight,
