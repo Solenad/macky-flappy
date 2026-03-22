@@ -8,5 +8,6 @@ export const GAME_CONFIG = {
   PIPE_WIDTH: 52,
   PIPE_GAP: 160,
   CANVAS_WIDTH: 400,
-  CANVAS_HEIGHT: 600,
+  CANVAS_HEIGHT: window.innerHeight,
+  GROUND_HEIGHT: 90,
 };

@@ -3,18 +3,33 @@
 import React, { useState, useEffect, useCallback } from "react";
 import Bird from "@/components/Bird";
 import { useControls } from "@/hooks/useControls";
-import { useGameLoop } from "@/hooks/useGameLoop";
+import useGameLoop from "@/hooks/useGameLoop";
 import { GAME_CONFIG } from "@/lib/constants";
 import { GameStatus } from "@/types/game";
 
 export default function FlappyBirdPage() {
   const [gameState, setGameState] = useState<GameStatus>("START");
   const [score, setScore] = useState(0);
-  const initialY = (GAME_CONFIG.CANVAS_HEIGHT - GAME_CONFIG.BIRD_HEIGHT) / 2;
+  const [canvasHeight, setCanvasHeight] = useState(
+    typeof window !== "undefined"
+      ? window.innerHeight
+      : GAME_CONFIG.CANVAS_HEIGHT + 100,
+  );
+
+  // Dynamically determine window height for border checking
+  useEffect(() => {
+    const handleResize = () => setCanvasHeight(window.innerHeight);
+    window.addEventListener("resize", handleResize);
+    return () => removeEventListener("resize", handleResize);
+  });
 
   const onGameOver = () => setGameState("GAME_OVER");
 
-  const { bird, flap, resetBird } = useGameLoop(gameState, onGameOver);
+  const { bird, flap, resetBird } = useGameLoop(
+    gameState,
+    onGameOver,
+    canvasHeight,
+  );
 
   // Trigger jump or start game
   const handleInteraction = () => {
@@ -70,7 +85,10 @@ export default function FlappyBirdPage() {
         <Bird y={bird.y} velocity={bird.velocity} />
 
         {/* Ground */}
-        <div className="absolute bottom-0 w-full h-20 bg-emerald-500 border-t-4 border-emerald-700 z-20" />
+        <div
+          className={`absolute bottom-0 w-full  bg-emerald-500 border-t-4 border-emerald-700 z-20`}
+          style={{ height: GAME_CONFIG.GROUND_HEIGHT + "px" }}
+        />
       </div>
     </main>
   );

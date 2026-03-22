@@ -2,7 +2,11 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { GameStatus, Bird } from "@/types/game";
 import { GAME_CONFIG } from "@/lib/constants";
 
-export function useGameLoop(status: GameStatus, onGameOver: () => void) {
+export default function useGameLoop(
+  status: GameStatus,
+  onGameOver: () => void,
+  canvasHeight: number,
+) {
   const [bird, setBird] = useState<Bird>({
     y: (GAME_CONFIG.CANVAS_HEIGHT - GAME_CONFIG.BIRD_HEIGHT) / 2,
     velocity: 0,
@@ -22,7 +26,10 @@ export function useGameLoop(status: GameStatus, onGameOver: () => void) {
         const newVelocity = prev.velocity + GAME_CONFIG.GRAVITY;
         const newY = prev.y + newVelocity;
 
-        if (newY + prev.height >= GAME_CONFIG.CANVAS_HEIGHT || newY <= 0) {
+        if (
+          newY + prev.height >= canvasHeight - GAME_CONFIG.GROUND_HEIGHT ||
+          newY <= 0
+        ) {
           onGameOver();
           return prev;
         }
@@ -32,7 +39,7 @@ export function useGameLoop(status: GameStatus, onGameOver: () => void) {
 
       frameId.current = requestAnimationFrame(updateRef.current);
     };
-  }, [status, onGameOver]);
+  }, [status, onGameOver, canvasHeight]);
 
   useEffect(() => {
     if (status === "PLAYING") {
