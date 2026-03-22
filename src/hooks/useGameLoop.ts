@@ -22,7 +22,7 @@ export function useGameLoop(status: GameStatus, onGameOver: () => void) {
         const newVelocity = prev.velocity + GAME_CONFIG.GRAVITY;
         const newY = prev.y + newVelocity;
 
-        if (newY + prev.height >= GAME_CONFIG.CANVAS_HEIGHT - 80 || newY <= 0) {
+        if (newY + prev.height >= GAME_CONFIG.CANVAS_HEIGHT || newY <= 0) {
           onGameOver();
           return prev;
         }

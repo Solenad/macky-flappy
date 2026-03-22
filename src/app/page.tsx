@@ -30,31 +30,35 @@ export default function FlappyBirdPage() {
 
   return (
     <main
-      className="relative flex h-screen w-full items-center justify-center bg-slate-900 select-none"
+      className="relative flex h-screen w-screen items-center justify-center bg-slate-900 select-none"
       onClick={handleInteraction}
     >
       {/* Game Container */}
       <div
         className="relative overflow-hidden bg-sky-400 border-4 border-slate-700 shadow-2xl"
         style={{
-          width: GAME_CONFIG.CANVAS_WIDTH,
-          height: GAME_CONFIG.CANVAS_HEIGHT,
+          width: "100%",
+          height: "100%",
         }}
       >
         {gameState === "START" && (
           <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-black/30 text-white">
-            <h1 className="text-4xl font-black mb-4 uppercase tracking-tighter">
+            <h1 className="text-[clamp(4rem,20vw,15rem)] tracking-widest font-black mb-4 uppercase tracking-tighter">
               Flappy Macky
             </h1>
-            <p className="animate-pulse">Click or Space to Fly</p>
+            <p className="text-[clamp(2.5rem,8vw,5rem)] tracking-wider animate-pulse">
+              Click or Space to Fly
+            </p>
           </div>
         )}
 
         {gameState === "GAME_OVER" && (
           <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-red-500/40 text-white">
-            <h2 className="text-5xl font-black mb-2">CRASHED!</h2>
+            <h2 className="text-[clamp(4rem,20vw,15rem)] tracking-widest font-black mb-2">
+              CRASHED!
+            </h2>
             <button
-              className="bg-white text-slate-900 px-6 py-2 font-bold rounded-lg hover:bg-slate-200 transition"
+              className="text-[clamp(1rem,6vw,3rem)] bg-white text-slate-900 px-6 py-2 font-bold rounded-lg hover:bg-slate-200 transition"
               onClick={handleInteraction}
             >
               Try Again
@@ -62,6 +66,7 @@ export default function FlappyBirdPage() {
           </div>
         )}
 
+        {/* The Bird: Now using real state from our hook! */}
         <Bird y={bird.y} velocity={bird.velocity} />
 
         {/* Ground */}
