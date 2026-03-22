@@ -81,8 +81,9 @@ export default function FlappyBirdPage() {
           </div>
         )}
 
-        {/* The Bird: Now using real state from our hook! */}
-        <Bird y={bird.y} velocity={bird.velocity} />
+        <div className="sm:pl-50 pl-20">
+          <Bird y={bird.y} velocity={bird.velocity} />
+        </div>
 
         {/* Ground */}
         <div
