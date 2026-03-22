@@ -1,15 +1,18 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import BirdComponent from "@/components/Bird";
+import Bird from "@/components/Bird";
 // import PipeComponent from "@/src/components/Pipe";
 // import ScoreBoard from "@/src/components/UI/Score";
 // import GameOver from "@/src/components/UI/GameOver";
 import { GAME_CONFIG } from "@/lib/constants";
+import { GameStatus } from "@/types/game";
 
 export default function FlappyBirdPage() {
   const [gameState, setGameState] = useState<GameStatus>("START");
   const [score, setScore] = useState(0);
+
+  const initialY = (GAME_CONFIG.CANVAS_HEIGHT - GAME_CONFIG.BIRD_HEIGHT) / 2;
 
   const handleJump = useCallback(() => {
     if (gameState === "START") {
@@ -34,7 +37,6 @@ export default function FlappyBirdPage() {
       className="relative flex h-screen w-full items-center justify-center bg-slate-900 overflow-hidden select-none"
       onClick={handleJump}
     >
-      {/* Game Container: Fixed Aspect Ratio */}
       <div className="relative h-full w-full bg-sky-400 border-4 border-slate-700 shadow-2xl overflow-hidden">
         {gameState === "START" && (
           <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/20 text-white">
@@ -44,6 +46,7 @@ export default function FlappyBirdPage() {
         )}
 
         {/* The Bird: Rendered based on Y-coordinate state */}
+        <Bird y={initialY} velocity={0} />
 
         {/* The Pipes: Mapped from an array of pipe objects */}
         <div className="absolute inset-0 pointer-events-none">
