@@ -1,13 +1,5 @@
 @import "tailwindcss";
 
-@font-face {
-  font-family: "Flappybirdy";
-  src: url("../../public/fonts/FlappybirdyRegular-KaBW.ttf") format("ttf");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -30,5 +22,5 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: "Flappybirdy", Helvetica, sans-serif;
+  font-family: var(--font-flappy);
 }

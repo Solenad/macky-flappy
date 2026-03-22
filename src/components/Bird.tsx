@@ -6,7 +6,7 @@ interface BirdProps {
   velocity: number;
 }
 
-const Bird: React.FC<BirdProps> = ({ y, velocity }) => {
+export default function Bird({ y, velocity }: BirdProps) {
   const rotation = Math.min(Math.max(velocity * 4, -20), 90);
 
   return (
@@ -31,6 +31,4 @@ const Bird: React.FC<BirdProps> = ({ y, velocity }) => {
       </div>
     </div>
   );
-};
-
-export default Bird;
+}

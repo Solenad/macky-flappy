@@ -20,4 +20,5 @@ export interface GameState {
   pipes: Pipe[];
   score: number;
   highScore: number;
+  canvasHeight: number;
 }
