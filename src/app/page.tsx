@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import Bird from "@/components/Bird";
+import Pipe from "@/components/Pipe";
 import { useControls } from "@/hooks/useControls";
 import useGameLoop from "@/hooks/useGameLoop";
 import { GAME_CONFIG } from "@/lib/constants";
@@ -25,7 +26,7 @@ export default function FlappyBirdPage() {
 
   const onGameOver = () => setGameState("GAME_OVER");
 
-  const { bird, flap, resetBird } = useGameLoop(
+  const { bird, flap, pipes, resetBird } = useGameLoop(
     gameState,
     onGameOver,
     canvasHeight,
@@ -66,7 +67,6 @@ export default function FlappyBirdPage() {
             </p>
           </div>
         )}
-
         {gameState === "GAME_OVER" && (
           <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-red-500/40 text-white">
             <h2 className="text-[clamp(4rem,20vw,15rem)] tracking-widest font-black mb-2">
@@ -80,11 +80,12 @@ export default function FlappyBirdPage() {
             </button>
           </div>
         )}
-
         <div className="sm:pl-50 pl-20">
           <Bird y={bird.y} velocity={bird.velocity} />
         </div>
-
+        {pipes.map((pipe: any, index) => (
+          <Pipe key={index} x={pipe.x} topHeight={pipe.topHeight} />
+        ))}
         {/* Ground */}
         <div
           className={`absolute bottom-0 w-full  bg-emerald-500 border-t-4 border-emerald-700 z-20`}
