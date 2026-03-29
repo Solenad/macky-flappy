@@ -7,7 +7,7 @@ export const GAME_CONFIG = {
   PIPE_SPAWN_RATE: 1500, // ms
   PIPE_WIDTH: 60,
   PIPE_GAP: 160,
-  CANVAS_WIDTH: window.innerWidth,
-  CANVAS_HEIGHT: window.innerHeight,
+  CANVAS_WIDTH: 100,
+  CANVAS_HEIGHT: 100,
   GROUND_HEIGHT: 90,
 };

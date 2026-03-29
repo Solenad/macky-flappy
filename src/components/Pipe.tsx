@@ -4,29 +4,16 @@ import { GAME_CONFIG } from "@/lib/constants";
 interface PipeProps {
   x: number;
   topHeight: number;
+  canvasHeight: number;
 }
 
-export default function Pipe({ x, topHeight }: PipeProps) {
+export default function Pipe({ x, topHeight, canvasHeight }: PipeProps) {
+  const bottomPipeHeight = canvasHeight - topHeight - GAME_CONFIG.PIPE_GAP - GAME_CONFIG.GROUND_HEIGHT;
+
   return (
-    <div className="absolute inset-0 pointer-events-none">
-      <div
-        className="absolute bg-emerald-600 border-x-4 border-b-4 border-emerald-900 rounded-b-lg"
-        style={{
-          width: GAME_CONFIG.PIPE_WIDTH,
-          height: topHeight,
-          left: x,
-          top: 0,
-        }}
-      />
-      <div
-        className="absolute bg-emerald-600 border-x-4 border-t-4 border-emerald-900 rounded-t-lg"
-        style={{
-          width: GAME_CONFIG.PIPE_WIDTH,
-          left: x,
-          top: topHeight + GAME_CONFIG.PIPE_GAP,
-          bottom: GAME_CONFIG.GROUND_HEIGHT,
-        }}
-      />
-    </div>
+    <>
+      <div style={{ position: "absolute", left: x, top: 0, width: GAME_CONFIG.PIPE_WIDTH, height: topHeight, backgroundColor: "green", zIndex: 25 }} />
+      <div style={{ position: "absolute", left: x, top: topHeight + GAME_CONFIG.PIPE_GAP, width: GAME_CONFIG.PIPE_WIDTH, height: bottomPipeHeight, backgroundColor: "green", zIndex: 25 }} />
+    </>
   );
 }
