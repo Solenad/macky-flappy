@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import Bird from "@/components/Bird";
+import Background from "@/components/Background";
 import Pipe from "@/components/Pipe";
 import Score from "@/components/ui/Score";
 import { useControls } from "@/hooks/useControls";
@@ -65,6 +66,7 @@ export default function FlappyBirdPage() {
           height: "100%",
         }}
       >
+        <Background />
         {gameState === "START" && (
           <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-black/30 text-white">
             <h1 className="text-[clamp(4rem,20vw,15rem)] tracking-widest font-black mb-4 uppercase tracking-tighter">
@@ -80,6 +82,7 @@ export default function FlappyBirdPage() {
             <h2 className="text-[clamp(4rem,20vw,15rem)] tracking-widest font-black mb-2">
               CRASHED!
             </h2>
+            <Score score={score} />
             <button
               className="text-[clamp(1rem,6vw,3rem)] bg-white text-slate-900 px-6 py-2 font-bold rounded-lg hover:bg-slate-200 transition"
               onClick={handleInteraction}
@@ -89,27 +92,19 @@ export default function FlappyBirdPage() {
           </div>
         )}
         {gameState === "PLAYING" && (
-          <div className="sm:pl-50 pl-20">
+          <div className="pl-20">
             <Bird y={bird.y} velocity={bird.velocity} />
           </div>
         )}
         <Score score={score} />
-        {pipes.map(
-          (pipe, index) =>
-            console.log(
-              "Rendering pipe:",
-              pipe.x,
-              pipe.topHeight,
-              canvasHeight,
-            ) || (
-              <Pipe
-                key={index}
-                x={pipe.x}
-                topHeight={pipe.topHeight}
-                canvasHeight={canvasHeight}
-              />
-            ),
-        )}
+        {pipes.map((pipe, index) => (
+          <Pipe
+            key={index}
+            x={pipe.x}
+            topHeight={pipe.topHeight}
+            canvasHeight={canvasHeight}
+          />
+        ))}
         {/* Ground */}
         <div
           className={`absolute bottom-0 w-full  bg-emerald-500 border-t-4 border-emerald-700 z-20`}

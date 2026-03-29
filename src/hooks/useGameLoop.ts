@@ -45,7 +45,58 @@ export default function useGameLoop(
   const update = useCallback(() => {
     if (status !== "PLAYING") return;
 
-    // Bird physics and collision
+    // Move pipes FIRST, then check collision against moved positions
+    const currentPipes = pipesRef.current;
+
+    // Move existing pipes and check for scoring
+    const movedPipes = pipesRef.current
+      .map((p) => ({ ...p, x: p.x - GAME_CONFIG.PIPE_SPEED }))
+      .filter((p) => p.x + GAME_CONFIG.PIPE_WIDTH > 0);
+
+    // Check for scoring - bird has passed a pipe
+    const birdX = GAME_CONFIG.BIRD_X_POSITION;
+    let scoredPipes = movedPipes.map((pipe) => {
+      if (!pipe.passed && birdX >= pipe.x + GAME_CONFIG.PIPE_WIDTH) {
+        return { ...pipe, passed: true };
+      }
+      return pipe;
+    });
+
+    // Spawn new pipe based on interval
+    const now = Date.now();
+    if (now - lastPipeSpawn.current > GAME_CONFIG.PIPE_SPAWN_RATE) {
+      const minPipeHeight = 50;
+      const maxPipeHeight =
+        canvasHeightRef.current -
+        GAME_CONFIG.GROUND_HEIGHT -
+        GAME_CONFIG.PIPE_GAP -
+        minPipeHeight;
+      const randomHeight =
+        Math.floor(Math.random() * (maxPipeHeight - minPipeHeight + 1)) +
+        minPipeHeight;
+
+      lastPipeSpawn.current = now;
+      const newPipe = {
+        x: canvasWidthRef.current,
+        topHeight: randomHeight,
+        width: GAME_CONFIG.PIPE_WIDTH,
+        passed: false,
+      };
+      scoredPipes = [...scoredPipes, newPipe];
+    }
+
+    // Update pipes ref and state with moved pipes
+    pipesRef.current = scoredPipes;
+    setPipes(scoredPipes);
+
+    // Update score - count newly passed pipes
+    const newlyScoredCount = scoredPipes.filter((pipe) => pipe.passed).length -
+                             currentPipes.filter((pipe) => pipe.passed).length;
+    if (newlyScoredCount > 0) {
+      setScore((prevScore) => prevScore + newlyScoredCount);
+    }
+
+    // Bird physics and collision - NOW uses moved pipe positions
     setBird((prevBird) => {
       const newVelocity = prevBird.velocity + GAME_CONFIG.GRAVITY;
       const newY = prevBird.y + newVelocity;
@@ -59,9 +110,8 @@ export default function useGameLoop(
         return prevBird;
       }
 
-      // Pipe Collision Logic (AABB) using ref for latest pipes
-      const birdX = 50; // Matches padding/margin in page.tsx
-      for (const pipe of pipesRef.current) {
+      // Pipe Collision Logic (AABB) - uses movedPipes (current frame)
+      for (const pipe of scoredPipes) {
         const withinX =
           birdX + prevBird.width > pipe.x &&
           birdX < pipe.x + GAME_CONFIG.PIPE_WIDTH;
@@ -79,66 +129,6 @@ export default function useGameLoop(
       const updatedBird = { ...prevBird, y: newY, velocity: newVelocity };
       birdRef.current = updatedBird;
       return updatedBird;
-    });
-
-    // Move and Spawn Pipes
-    setPipes(() => {
-      // Use ref instead of prevPipes since ref always has latest value
-      const currentPipes = pipesRef.current;
-
-      // Move existing pipes
-      const movedPipes = currentPipes
-        .map((p) => ({ ...p, x: p.x - GAME_CONFIG.PIPE_SPEED }))
-        .filter((p) => p.x + GAME_CONFIG.PIPE_WIDTH > 0);
-
-      // Spawn new pipe based on interval
-      const now = Date.now();
-      if (now - lastPipeSpawn.current > GAME_CONFIG.PIPE_SPAWN_RATE) {
-        const minPipeHeight = 50;
-        const maxPipeHeight =
-          canvasHeightRef.current -
-          GAME_CONFIG.GROUND_HEIGHT -
-          GAME_CONFIG.PIPE_GAP -
-          minPipeHeight;
-        const randomHeight =
-          Math.floor(Math.random() * (maxPipeHeight - minPipeHeight + 1)) +
-          minPipeHeight;
-
-        lastPipeSpawn.current = now;
-        const newPipe = {
-          x: canvasWidthRef.current,
-          topHeight: randomHeight,
-          width: GAME_CONFIG.PIPE_WIDTH,
-          passed: false,
-        };
-        const updatedPipes = [...movedPipes, newPipe];
-        pipesRef.current = updatedPipes;
-        console.log("SPAWNING: returning pipes:", updatedPipes.map(p => p.x));
-        return updatedPipes;
-      }
-
-      // Check for scoring - bird has passed a pipe
-      const scoredPipes = movedPipes.map((pipe) => {
-        // If bird has passed this pipe and we haven't scored it yet
-        if (!pipe.passed) {
-          const birdX = 50; // Matches padding/margin in page.tsx
-          if (birdX > pipe.x + GAME_CONFIG.PIPE_WIDTH) {
-            // Bird has passed this pipe
-            return { ...pipe, passed: true };
-          }
-        }
-        return pipe;
-      });
-
-      // Update score based on newly passed pipes
-      const newlyScored = scoredPipes.filter((pipe) => pipe.passed);
-      if (newlyScored.length > 0) {
-        setScore((prevScore) => prevScore + newlyScored.length);
-      }
-
-      pipesRef.current = scoredPipes;
-      console.log("NOT SPAWNING: returning pipes:", scoredPipes.map(p => p.x));
-      return scoredPipes;
     });
 
     frameId.current = requestAnimationFrame(update);
