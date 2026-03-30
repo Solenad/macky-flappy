@@ -12,6 +12,7 @@ import { GameStatus } from "@/types/game";
 
 export default function FlappyBirdPage() {
   const [gameState, setGameState] = useState<GameStatus>("START");
+  const [highScore, setHighScore] = useState(0);
   const [canvasHeight, setCanvasHeight] = useState(
     typeof window !== "undefined"
       ? window.innerHeight
@@ -40,6 +41,31 @@ export default function FlappyBirdPage() {
     canvasHeight,
     canvasWidth,
   );
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("mackyHighScore");
+      if (stored) {
+        const parsed = parseInt(stored, 10);
+        if (!isNaN(parsed)) {
+          setHighScore(parsed);
+        }
+      }
+    } catch (e) {
+      console.warn("Failed to load high score from localStorage");
+    }
+  }, []);
+
+  useEffect(() => {
+    if (gameState === "GAME_OVER" && score > highScore) {
+      try {
+        localStorage.setItem("mackyHighScore", score.toString());
+        setHighScore(score);
+      } catch (e) {
+        console.warn("Failed to save high score to localStorage");
+      }
+    }
+  }, [gameState, score, highScore]);
 
   // Trigger jump or start game
   const handleInteraction = () => {
@@ -83,6 +109,9 @@ export default function FlappyBirdPage() {
               CRASHED!
             </h2>
             <Score score={score} />
+            <p className="text-[clamp(1.5rem,5vw,3rem)] font-bold text-yellow-300">
+              Best: {highScore}
+            </p>
             <button
               className="text-[clamp(1rem,6vw,3rem)] bg-white text-slate-900 my-20 px-6 py-2 font-bold rounded-lg hover:bg-slate-200 transition"
               onClick={handleInteraction}
