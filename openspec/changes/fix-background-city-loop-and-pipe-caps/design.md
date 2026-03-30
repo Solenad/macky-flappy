@@ -1,0 +1,70 @@
+## Context
+
+The Macky Flappy game currently has three visual issues:
+1. The background city image uses a CSS animation that translates -100%, causing it to reset abruptly after one scroll cycle, leaving empty space
+2. Pipes render as simple green rectangles without the characteristic flared cap ends from the original Flappy Bird
+3. The background scrolls at the same speed (4px/frame) as the pipes, reducing the parallax depth effect
+
+## Goals / Non-Goals
+
+**Goals:**
+- Fix background city to scroll infinitely without visible seams or gaps
+- Add flared cap ends to pipes (top and bottom)
+- Adjust background scroll speed to create parallax effect
+
+**Non-Goals:**
+- Add new background images or themes
+- Modify pipe collision logic or gameplay
+- Change the bird or other game elements
+
+## Decisions
+
+### Background Scrolling Implementation
+**Decision:** Use two side-by-side background images with CSS animation translating -50% instead of -100%
+
+**Rationale:** 
+- Current `translateX(-100%)` with `width: 200%` doesn't create a seamless loop because the animation resets to 0 abruptly
+- Using `translateX(-50%)` ensures that when the animation resets, the second copy of the image is exactly where the first copy started, creating seamless infinity scroll
+- This is a CSS-only solution with minimal performance overhead
+
+**Alternative Considered:** JavaScript-based position tracking
+- Rejected: More complex, requires requestAnimationFrame, unnecessary for simple parallax background
+
+### Pipe Cap Design
+**Decision:** Add 8px flared caps to both top and bottom pipes using CSS pseudo-elements
+
+**Rationale:**
+- Caps should extend 8px beyond the pipe width on both left and right sides
+- Top pipe caps point downward, bottom pipe caps point upward
+- Use the same green color as the pipe body with darker border
+
+**Alternative Considered:** Using SVG images for caps
+- Rejected: More complex, requires additional assets, CSS solution is simpler and fully customizable
+
+### Background Scroll Speed
+**Decision:** Set background scroll speed to 2px/frame (half the pipe speed of 4px)
+
+**Rationale:**
+- Slower background creates depth perception - distant objects move slower than foreground
+- 2px is slow enough to be noticeable but fast enough to maintain visual flow
+- Original Flappy Bird uses similar parallax effect with city scrolling slower than pipes
+
+## Risks / Trade-offs
+
+- [Risk] Background animation might have slight frame dips on low-end devices
+  - [Mitigation] CSS animations run on compositor thread, should be performant
+
+- [Risk] Pipe caps might affect collision detection visually
+  - [Mitigation] Caps are purely visual (rendered outside pipe hitbox), collision logic unchanged
+
+- [Risk] Fixed scroll speed might not work well on all screen sizes
+  - [Mitigation] Speed is in pixels, relative to viewport; adjustable via props if needed
+
+## Open Questions
+
+- Should the background speed be configurable per game level/theme? (Not in scope for this change)
+- Should we add additional parallax layers (clouds, mountains)? (Future enhancement)
+
+## User Responses to Open Questions
+1. Background speed should not be configurable, it stays the same.
+2. Additional parallax layers will be great, at minimum clouds only and no mountains as the it will overlap the city image background.
