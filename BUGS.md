@@ -46,9 +46,36 @@ In game loops using `requestAnimationFrame`, the animation frame cycle and React
 
 ---
 
-## Bug #2: (To be documented)
+## Bug #2: Background City Image Cuts Off
 
----
+### Summary
+The background city image would cut off after scrolling once, leaving empty blue space.
+
+### Date Fixed
+March 30, 2026
+
+### Symptoms
+- Background scrolled for one cycle then stopped showing
+- Empty blue space appeared where background should continue
+
+### Root Cause
+CSS animation (`translateX(-50%)`) with `width: 200%` stretched a single image. The animation just revealed more of the stretched image, then reset abruptly causing visible seams.
+
+### Files Affected
+- `src/components/Background.tsx` - Complete rewrite with JS-driven scrolling
+- `src/lib/constants.ts` - BACKGROUND_SCROLL_SPEED
+- `src/app/globals.css` - CSS animation removed
+
+### Fix Applied
+Replaced CSS animation with JavaScript-driven approach:
+1. Uses `requestAnimationFrame` directly in component (runs at 60fps+)
+2. Tracks position with `useRef` (no React re-renders for smooth updates)
+3. Renders 3 images in an array
+4. Each image positioned at `index * width + positionRef.current`
+5. When first image scrolls off-screen (`position <= -width`), array cycles seamlessly
+
+### Key Lesson
+CSS animations run on a separate thread from JavaScript game loops, causing frame drops. For synchronized scrolling, use JS-driven position tracking.
 
 ## Contributing to This File
 

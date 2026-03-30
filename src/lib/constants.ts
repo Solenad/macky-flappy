@@ -4,9 +4,11 @@ export const GAME_CONFIG = {
   BIRD_X_POSITION: 80, // Horizontal position (matches pl-20 in page.tsx)
   GRAVITY: 0.5,
   JUMP_STRENGTH: -10,
-  PIPE_SPEED: 4,
+  PIPE_SPEED: 5,
   PIPE_SPAWN_RATE: 1500, // ms
+  BACKGROUND_SCROLL_SPEED: 4,
   PIPE_WIDTH: 60,
+  PIPE_CAP_WIDTH: 8,
   PIPE_GAP: 160,
   CANVAS_WIDTH: 100,
   CANVAS_HEIGHT: 100,

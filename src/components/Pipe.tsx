@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { GAME_CONFIG } from "@/lib/constants";
 
+const PIPE_CAP_WIDTH = 8;
+
 interface PipeProps {
   x: number;
   topHeight: number;
@@ -30,6 +32,8 @@ export default function Pipe({ x, topHeight, canvasHeight }: PipeProps) {
     width: "100%",
     height: "100%",
     backgroundColor: "green",
+    border: "3px solid #1a5c1a",
+    boxSizing: "border-box",
     display: spritePath && imageLoaded ? "none" : "block",
   };
 
@@ -47,6 +51,17 @@ export default function Pipe({ x, topHeight, canvasHeight }: PipeProps) {
           />
         )}
         <div style={fallbackStyle} />
+        <div
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: -PIPE_CAP_WIDTH,
+            width: GAME_CONFIG.PIPE_WIDTH + 2 * PIPE_CAP_WIDTH,
+            height: PIPE_CAP_WIDTH,
+            backgroundColor: "green",
+            border: "2px solid #1a5c1a",
+          }}
+        />
       </div>
       {/* Bottom Pipe */}
       <div style={{ ...pipeStyle, top: topHeight + GAME_CONFIG.PIPE_GAP, height: bottomPipeHeight }}>
@@ -60,6 +75,17 @@ export default function Pipe({ x, topHeight, canvasHeight }: PipeProps) {
           />
         )}
         <div style={fallbackStyle} />
+        <div
+          style={{
+            position: "absolute",
+            top: -PIPE_CAP_WIDTH,
+            left: -PIPE_CAP_WIDTH,
+            width: GAME_CONFIG.PIPE_WIDTH + 2 * PIPE_CAP_WIDTH,
+            height: PIPE_CAP_WIDTH,
+            backgroundColor: "green",
+            border: "2px solid #1a5c1a",
+          }}
+        />
       </div>
     </>
   );

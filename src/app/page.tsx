@@ -66,7 +66,7 @@ export default function FlappyBirdPage() {
           height: "100%",
         }}
       >
-        <Background />
+        <Background canvasWidth={canvasWidth} />
         {gameState === "START" && (
           <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-black/30 text-white">
             <h1 className="text-[clamp(4rem,20vw,15rem)] tracking-widest font-black mb-4 uppercase tracking-tighter">
@@ -78,13 +78,13 @@ export default function FlappyBirdPage() {
           </div>
         )}
         {gameState === "GAME_OVER" && (
-          <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-red-500/40 text-white">
+          <div className="absolute inset-0 z-30 flex flex-col items-center justify-space-between bg-red-500/40 text-white">
             <h2 className="text-[clamp(4rem,20vw,15rem)] tracking-widest font-black mb-2">
               CRASHED!
             </h2>
             <Score score={score} />
             <button
-              className="text-[clamp(1rem,6vw,3rem)] bg-white text-slate-900 px-6 py-2 font-bold rounded-lg hover:bg-slate-200 transition"
+              className="text-[clamp(1rem,6vw,3rem)] bg-white text-slate-900 my-20 px-6 py-2 font-bold rounded-lg hover:bg-slate-200 transition"
               onClick={handleInteraction}
             >
               Try Again

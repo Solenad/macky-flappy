@@ -16,6 +16,7 @@ export default function useGameLoop(
   });
   const [pipes, setPipes] = useState<PipeType[]>([]);
   const [score, setScore] = useState(0);
+  const [backgroundPosition, setBackgroundPosition] = useState(0);
   const frameId = useRef<number | null>(null);
   const lastPipeSpawn = useRef<number>(0);
 
@@ -24,6 +25,7 @@ export default function useGameLoop(
   const canvasHeightRef = useRef(canvasHeight);
   const birdRef = useRef<Bird>(bird);
   const pipesRef = useRef<PipeType[]>(pipes);
+  const backgroundPositionRef = useRef(0);
 
   // Keep refs in sync with state and props
   useEffect(() => {
@@ -131,6 +133,13 @@ export default function useGameLoop(
       return updatedBird;
     });
 
+    // Update background position
+    backgroundPositionRef.current = (backgroundPositionRef.current - GAME_CONFIG.BACKGROUND_SCROLL_SPEED) % canvasWidthRef.current;
+    if (backgroundPositionRef.current > 0) {
+      backgroundPositionRef.current = 0;
+    }
+    setBackgroundPosition(backgroundPositionRef.current);
+
     frameId.current = requestAnimationFrame(update);
   }, [status, onGameOver]);
 
@@ -163,8 +172,10 @@ export default function useGameLoop(
     setPipes([]);
     pipesRef.current = [];
     setScore(0);
+    backgroundPositionRef.current = 0;
+    setBackgroundPosition(0);
     lastPipeSpawn.current = 0; // Reset pipe spawn timer
   };
 
-  return { bird, pipes, flap, resetBird, score };
+  return { bird, pipes, flap, resetBird, score, backgroundPosition };
 }
