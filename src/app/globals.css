@@ -14,6 +14,37 @@
   width: 200%;
 }
 
+/* Background scrolling animation - JS driven via CSS variable */
+.bg-scroll-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200%;
+  height: 100%;
+  display: flex;
+  transform: translateX(var(--bg-position, 0%));
+}
+
+.bg-image-wrapper {
+  position: relative;
+  width: 50%;
+  height: 100%;
+}
+
+.bg-image {
+  object-fit: cover;
+  object-position: left top;
+}
+
+@keyframes bg-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;

@@ -66,7 +66,7 @@ export default function FlappyBirdPage() {
           height: "100%",
         }}
       >
-        <Background canvasWidth={canvasWidth} />
+        <Background />
         {gameState === "START" && (
           <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-black/30 text-white">
             <h1 className="text-[clamp(4rem,20vw,15rem)] tracking-widest font-black mb-4 uppercase tracking-tighter">
